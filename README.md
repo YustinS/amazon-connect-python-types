@@ -1,0 +1,28 @@
+# Amazon Connect Python Types
+
+This repository provides type definitions for Amazon Connect services in Python. These are intended to be used in validation scenarios and development environments to ensure type safety and improve code quality when working with Amazon Connect.
+In particular, this repo contains type definitions that otherwise don't exist in `boto3` by default, or may otherwise be useful to validate.
+
+## Proficiency Routing
+
+The type definitions for Proficiency Routing are based on the [Amazon Connect Proficiency Routing documentation](https://docs.aws.amazon.com/connect/latest/adminguide/proficiency-routing.html), and the provided [Lambda sample references](https://docs.aws.amazon.com/connect/latest/adminguide/set-routing-criteria.html#set-routing-criteria-sample-lambda-function)
+Since these inputs require relatively complex structures, having pydantic definitions can help ensure that they are constructed correctly, and also can allow for more certainty when providing inputs or generating a a response, such as in an API scenario to manage a large assortment of proficiencies.
+
+## Development
+
+These repo uses [uv](https://uv.dev/) to manage the development environment and dependencies.
+To set up the development environment, run:
+
+```sh
+make install
+```
+
+To run the unit tests with code coverage, run:
+
+```sh
+make test
+```
+
+## License
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.

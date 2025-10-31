@@ -8,6 +8,21 @@ In particular, this repo contains type definitions that otherwise don't exist in
 The type definitions for Proficiency Routing are based on the [Amazon Connect Proficiency Routing documentation](https://docs.aws.amazon.com/connect/latest/adminguide/proficiency-routing.html), and the provided [Lambda sample references](https://docs.aws.amazon.com/connect/latest/adminguide/set-routing-criteria.html#set-routing-criteria-sample-lambda-function)
 Since these inputs require relatively complex structures, having pydantic definitions can help ensure that they are constructed correctly, and also can allow for more certainty when providing inputs or generating a a response, such as in an API scenario to manage a large assortment of proficiencies.
 
+### Usage
+
+To use this type definition, you should add the code files as relevant to your project.
+For example, to use the `Proficiency` type definition in your code, you can do
+
+```python
+    my_proficiency_payload = {
+        # your proficiency payload data here
+    }
+    try:
+        validated_payload = ProficiencyRoutingPayload.model_validate(my_proficiency_payload)
+    except ValidationError as e:
+        print("Invalid proficiency payload:", e)
+```
+
 ## Development
 
 These repo uses [uv](https://uv.dev/) to manage the development environment and dependencies.

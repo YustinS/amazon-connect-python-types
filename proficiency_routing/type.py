@@ -2,8 +2,9 @@
 Schema definitions for proficiency routing expressions and steps.
 """
 
+from __future__ import annotations
 from typing import Any, List, Optional, Literal
-from pydantic import BaseModel, field_validator, model_validator
+from pydantic import BaseModel, Field, field_validator, model_validator
 
 
 class RangeSpec(BaseModel):  # pylint:disable=too-few-public-methods
@@ -11,8 +12,22 @@ class RangeSpec(BaseModel):  # pylint:disable=too-few-public-methods
     Range specification model.
     """
 
-    MinProficiencyLevel: float
-    MaxProficiencyLevel: float
+    MinProficiencyLevel: float = Field(
+        ..., description="Minimum proficiency level for the range"
+    )
+    MaxProficiencyLevel: float = Field(
+        ..., description="Maximum proficiency level for the range"
+    )
+
+    @property
+    def min_proficiency_level(self) -> float:
+        """Minimum proficiency level for the range."""
+        return self.MinProficiencyLevel
+
+    @property
+    def max_proficiency_level(self) -> float:
+        """Maximum proficiency level for the range."""
+        return self.MaxProficiencyLevel
 
     @model_validator(mode="after")
     def check_min_le_max(self):
@@ -24,15 +39,45 @@ class RangeSpec(BaseModel):  # pylint:disable=too-few-public-methods
 
 class AttributeCondition(BaseModel):  # pylint:disable=too-few-public-methods
     """
-    Full
-    Attribute condition model
+    Attribute condition model for proficiency routing.
     """
 
-    Name: str
-    Value: str
-    ProficiencyLevel: Optional[float] = None
-    ComparisonOperator: Literal["Range", "NumberGreaterOrEqualTo"]
-    Range: Optional[RangeSpec] = None
+    Name: str = Field(..., description="Name of the attribute to evaluate")
+    Value: str = Field(..., description="Value to compare against the attribute")
+    ProficiencyLevel: Optional[float] = Field(
+        None, description="Proficiency level for numeric comparisons"
+    )
+    ComparisonOperator: Literal["Range", "NumberGreaterOrEqualTo"] = Field(
+        ..., description="Type of comparison to perform"
+    )
+    Range: Optional[RangeSpec] = Field(
+        None, description="Range specification for range-based comparisons"
+    )
+
+    @property
+    def name(self) -> str:
+        """Name of the attribute to evaluate."""
+        return self.Name
+
+    @property
+    def value(self) -> str:
+        """Value to compare against the attribute."""
+        return self.Value
+
+    @property
+    def proficiency_level(self) -> Optional[float]:
+        """Proficiency level for numeric comparisons."""
+        return self.ProficiencyLevel
+
+    @property
+    def comparison_operator(self) -> Literal["Range", "NumberGreaterOrEqualTo"]:
+        """Type of comparison to perform."""
+        return self.ComparisonOperator
+
+    @property
+    def range(self) -> Optional[RangeSpec]:
+        """Range specification for range-based comparisons."""
+        return self.Range
 
     @model_validator(mode="after")
     def check_operator_field_consistency(self):
@@ -74,6 +119,11 @@ class AttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-method
 
     AttributeCondition: AttributeCondition
 
+    @property
+    def attribute_condition(self) -> AttributeCondition:
+        """Attribute condition to evaluate."""
+        return self.AttributeCondition
+
 
 class NotAttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-methods
     """
@@ -82,14 +132,33 @@ class NotAttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-met
 
     NotAttributeCondition: AttributeCondition
 
+    @property
+    def not_attribute_condition(self) -> AttributeCondition:
+        """Attribute condition to negate."""
+        return self.NotAttributeCondition
+
 
 class CompoundExpr(BaseModel):  # pylint:disable=too-few-public-methods
     """
     Model for compound expressions (And/Or).
     """
 
-    AndExpression: Optional[List[Any]] = None
-    OrExpression: Optional[List[Any]] = None
+    AndExpression: Optional[List[Any]] = Field(
+        None, description="List of expressions to evaluate with AND logic"
+    )
+    OrExpression: Optional[List[Any]] = Field(
+        None, description="List of expressions to evaluate with OR logic"
+    )
+
+    @property
+    def and_expression(self) -> Optional[List[Any]]:
+        """List of expressions to evaluate with AND logic."""
+        return self.AndExpression
+
+    @property
+    def or_expression(self) -> Optional[List[Any]]:
+        """List of expressions to evaluate with OR logic."""
+        return self.OrExpression
 
     @model_validator(mode="before")
     @classmethod
@@ -144,7 +213,14 @@ class ExpiryRule(BaseModel):  # pylint:disable=too-few-public-methods
     Model for expiry rules.
     """
 
-    DurationInSeconds: int
+    DurationInSeconds: int = Field(
+        ..., description="Duration in seconds after which the step expires", gt=0
+    )
+
+    @property
+    def duration_in_seconds(self) -> int:
+        """Duration in seconds after which the step expires."""
+        return self.DurationInSeconds
 
     @field_validator("DurationInSeconds")
     @classmethod
@@ -173,8 +249,20 @@ class Step(BaseModel):  # pylint:disable=too-few-public-methods
     Schema for a single proficiency routing step.
     """
 
-    Expression: Any
-    Expiry: Optional[ExpiryRule] = None
+    Expression: Any = Field(..., description="Expression to evaluate for this step")
+    Expiry: Optional[ExpiryRule] = Field(
+        None, description="Optional expiry rule for this step"
+    )
+
+    @property
+    def expression(self) -> Any:
+        """Expression to evaluate for this step."""
+        return self.Expression
+
+    @property
+    def expiry(self) -> Optional[ExpiryRule]:
+        """Optional expiry rule for this step."""
+        return self.Expiry
 
     @field_validator("Expression", mode="before")
     @classmethod
@@ -199,7 +287,14 @@ class ProficiencyRoutingPayload(BaseModel):  # pylint:disable=too-few-public-met
     Schema for proficiency routing payload.
     """
 
-    Steps: List[Step]
+    Steps: List[Step] = Field(
+        ..., description="List of proficiency routing steps to evaluate", min_length=1
+    )
+
+    @property
+    def steps(self) -> List[Step]:
+        """List of proficiency routing steps to evaluate."""
+        return self.Steps
 
     @field_validator("Steps")
     @classmethod

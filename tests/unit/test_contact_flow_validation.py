@@ -37,7 +37,7 @@ class TestSuccess:
                         "Name": "BasicQueue",
                     },
                     "SystemEndpoint": {
-                        "Address": "+1987654321",
+                        "Address": "+11111111111",
                         "Type": "TELEPHONE_NUMBER",
                     },
                     "MediaStreams": {

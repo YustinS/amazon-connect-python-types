@@ -7,4 +7,4 @@ install:
 
 test:
 	$(info [*] Running unit tests...)
-	@uv run pytest --cov-report=term-missing --cov-fail-under=$(CODE_COVERAGE) -vv
+	@uv run pytest --cov-fail-under=$(CODE_COVERAGE) --cov-report=term-missing -vv

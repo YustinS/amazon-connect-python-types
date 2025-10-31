@@ -11,7 +11,7 @@ Since these inputs require relatively complex structures, having pydantic defini
 ### Usage
 
 To use this type definition, you should add the code files as relevant to your project.
-For example, to use the `Proficiency` type definition in your code, you can do
+For example, to use the `ProficiencyRoutingPayload` type definition in your code, you can do
 
 ```python
     my_proficiency_payload = {

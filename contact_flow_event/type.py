@@ -55,7 +55,7 @@ class ConnectContactFlowEndpoint(BaseModel):
 
     @property
     def address(self) -> str:
-        """The phone number."""
+        """The address as contacted in Connect."""
         return self.Address
 
     @property
@@ -101,8 +101,9 @@ class ConnectContactFlowMediaStreamAudio(BaseModel):
 
     @property
     def start_fragment_number(self) -> str | None:
-        """The number that identifies the Kinesis Video Streams fragment, in the stream used for Live media streaming,
-        in which the customer audio stream started.
+        """
+        The number that identifies the Kinesis Video Streams fragment, in the stream used for 
+        Live media streaming, in which the customer audio stream started.
         """
         return self.StartFragmentNumber
 
@@ -113,8 +114,9 @@ class ConnectContactFlowMediaStreamAudio(BaseModel):
 
     @property
     def stream_arn(self) -> str | None:
-        """The ARN of the Kinesis Video stream used for Live media streaming that includes the customer data to
-        reference.
+        """
+        The ARN of the Kinesis Video stream used for Live media streaming that includes the 
+        customer data to reference.
         """
         return self.StreamARN
 
@@ -207,8 +209,10 @@ class ConnectContactFlowData(BaseModel):
 
     @property
     def initial_contact_id(self) -> str:
-        """The unique identifier for the contact associated with the first interaction between the customer and your
-        contact center. Use the initial contact ID to track contacts between contact flows.
+        """
+        The unique identifier for the contact associated with the first interaction between 
+        the customer and your contact center. Use the initial contact ID to track contacts 
+        between contact flows.
         """
         return self.InitialContactId
 
@@ -253,11 +257,14 @@ class ConnectContactFlowEventDetails(BaseModel):
     ContactData: ConnectContactFlowData = Field(
         ..., description="Contact data information"
     )
-    Parameters: dict[str, str] = Field(..., description="Lambda function parameters", min_length=0)
+    Parameters: dict[str, str] = Field(
+        ..., description="Lambda function parameters", min_length=0
+    )
 
 
 class ConnectContactFlowEvent(BaseModel):
-    """Amazon Connect contact flow event
+    """
+    Amazon Connect contact flow event
 
     Documentation:
     -------------

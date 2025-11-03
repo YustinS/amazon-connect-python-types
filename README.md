@@ -8,6 +8,12 @@ In particular, this repo contains type definitions that otherwise don't exist in
 The type definitions for Proficiency Routing are based on the [Amazon Connect Proficiency Routing documentation](https://docs.aws.amazon.com/connect/latest/adminguide/proficiency-routing.html), and the provided [Lambda sample references](https://docs.aws.amazon.com/connect/latest/adminguide/set-routing-criteria.html#set-routing-criteria-sample-lambda-function)
 Since these inputs require relatively complex structures, having pydantic definitions can help ensure that they are constructed correctly, and also can allow for more certainty when providing inputs or generating a a response, such as in an API scenario to manage a large assortment of proficiencies.
 
+## Contact Flow Event
+
+This type definition is not strictly intended for usage in production code, as the input is provided from Amazon Connect and should be consistent without much further maniupulation (if any is required its more likely to be around ensuring expected parameters or attributes exist to be used).
+Instead, this is more intended to be used in development environments to help ensure that code working with Contact Flow Event data is correctly handling the expected structure.
+Importantly, this may not include all `enum` values. Notably, this doesn't currently include any email channel related values.
+
 ### Usage
 
 To use this type definition, you should add the code files as relevant to your project.

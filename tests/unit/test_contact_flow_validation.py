@@ -16,46 +16,10 @@ from contact_flow_event.type import (
 class TestSuccess:
     """Test valid parsing and validation of Amazon Connect Contact Flow Event models."""
 
-    def test_complete_valid_event(self):
+    def test_complete_valid_event(self, amazon_connect_contact_flow_event):
         """Test that a complete, valid event can be created and validated."""
-        event_data = {
-            "Details": {
-                "ContactData": {
-                    "Attributes": {"customer_type": "premium", "language": "en"},
-                    "Channel": "VOICE",
-                    "ContactId": "12345678-1234-1234-1234-123456789012",
-                    "CustomerEndpoint": {
-                        "Address": "+1234567890",
-                        "Type": "TELEPHONE_NUMBER",
-                    },
-                    "InitialContactId": "12345678-1234-1234-1234-123456789012",
-                    "InitiationMethod": "INBOUND",
-                    "InstanceARN": "arn:aws:connect:us-east-1:123456789012:instance/12345678-1234-1234-1234-123456789012",
-                    "PreviousContactId": "12345678-1234-1234-1234-123456789012",
-                    "Queue": {
-                        "ARN": "arn:aws:connect:us-east-1:123456789012:instance/12345678-1234-1234-1234-123456789012/queue/12345678-1234-1234-1234-123456789012",
-                        "Name": "BasicQueue",
-                    },
-                    "SystemEndpoint": {
-                        "Address": "+11111111111",
-                        "Type": "TELEPHONE_NUMBER",
-                    },
-                    "MediaStreams": {
-                        "Customer": {
-                            "Audio": {
-                                "StartFragmentNumber": "123456789",
-                                "StartTimestamp": "2024-01-01T00:00:00.000Z",
-                                "StreamARN": "arn:aws:kinesisvideo:us-east-1:123456789012:stream/connect-123456789012",
-                            }
-                        }
-                    },
-                },
-                "Parameters": {"param1": "value1", "param2": "value2"},
-            }
-        }
-
         # Should create successfully
-        event = ConnectContactFlowEvent(**event_data)  # type: ignore
+        event = ConnectContactFlowEvent(**amazon_connect_contact_flow_event)  # type: ignore
 
         # Test property access
         assert event.contact_data.contact_id == "12345678-1234-1234-1234-123456789012"

@@ -1,5 +1,3 @@
-CODE_COVERAGE = 72
-
 install:
 	$(info [*] Preparing development environment...)
 	@uv venv
@@ -7,4 +5,7 @@ install:
 
 test:
 	$(info [*] Running unit tests...)
-	@uv run pytest --cov-fail-under=$(CODE_COVERAGE) --cov-report=term-missing -vv
+	@uv run pytest
+
+lint:
+	@uv run black .

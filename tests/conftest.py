@@ -157,6 +157,7 @@ def amazon_connect_contact_flow_event():
         "Details": {
             "ContactData": {
                 "Attributes": {"customer_type": "premium", "language": "en"},
+                "AwsRegion": "us-east-1",
                 "Channel": "VOICE",
                 "ContactId": "12345678-1234-1234-1234-123456789012",
                 "CustomerEndpoint": {

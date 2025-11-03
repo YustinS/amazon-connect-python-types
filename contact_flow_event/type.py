@@ -30,6 +30,7 @@ class ConnectContactFlowEndpointType(Enum):
     """
 
     TELEPHONE_NUMBER = "TELEPHONE_NUMBER"
+    EMAIL_ADDRESS = "EMAIL_ADDRESS"
 
 
 class ConnectContactFlowInitiationMethod(Enum):
@@ -43,6 +44,35 @@ class ConnectContactFlowInitiationMethod(Enum):
     CALLBACK = "CALLBACK"
     API = "API"
     DISCONNECT = "DISCONNECT"
+    FLOW = "FLOW"
+
+
+class ConnectContactReferenceType(Enum):
+    """
+    The reference type of the contact
+    """
+
+    URL = "URL"
+    ATTACHMENT = "ATTACHMENT"
+    STRING = "STRING"
+    CONTACT_ANALYSIS = "CONTACT_ANALYSIS"
+    NUMBER = "NUMBER"
+    DATE = "DATE"
+    EMAIL = "EMAIL"
+    EMAIL_MESSAGE = "EMAIL_MESSAGE"
+
+
+class ConnectContactReferenceStatus(Enum):
+    """
+    The reference status of the contact
+    """
+
+    AVAILABLE = "AVAILABLE"
+    DELETED = "DELETED"
+    APPROVED = "APPROVED"
+    REJECTED = "REJECTED"
+    PROCESSING = "PROCESSING"
+    FAILED = "FAILED"
 
 
 class ConnectContactFlowEndpoint(BaseModel):
@@ -52,6 +82,10 @@ class ConnectContactFlowEndpoint(BaseModel):
 
     Address: str = Field(..., description="The phone number")
     Type: ConnectContactFlowEndpointType = Field(..., description="The endpoint type")
+    DisplayName: Optional[str] = Field(
+        None,
+        description="The display name for the endpoint. Primarily relevant for Email",
+    )
 
     @property
     def address(self) -> str:
@@ -62,6 +96,11 @@ class ConnectContactFlowEndpoint(BaseModel):
     def endpoint_type(self) -> ConnectContactFlowEndpointType:
         """The endpoint type."""
         return self.Type
+
+    @property
+    def display_name(self) -> str | None:
+        """The display name for the endpoint."""
+        return self.DisplayName
 
 
 class ConnectContactFlowQueue(BaseModel):
@@ -102,7 +141,7 @@ class ConnectContactFlowMediaStreamAudio(BaseModel):
     @property
     def start_fragment_number(self) -> str | None:
         """
-        The number that identifies the Kinesis Video Streams fragment, in the stream used for 
+        The number that identifies the Kinesis Video Streams fragment, in the stream used for
         Live media streaming, in which the customer audio stream started.
         """
         return self.StartFragmentNumber
@@ -115,7 +154,7 @@ class ConnectContactFlowMediaStreamAudio(BaseModel):
     @property
     def stream_arn(self) -> str | None:
         """
-        The ARN of the Kinesis Video stream used for Live media streaming that includes the 
+        The ARN of the Kinesis Video stream used for Live media streaming that includes the
         customer data to reference.
         """
         return self.StreamARN
@@ -155,12 +194,124 @@ class ConnectContactFlowMediaStreams(BaseModel):
         return self.Customer
 
 
+class ConnectContactReferenceFields(BaseModel):
+    """
+    Contact reference fields
+    """
+
+    Arn: Optional[str] = Field(None, description="ARN reference")
+    Status: Optional[ConnectContactReferenceStatus] = Field(
+        None, description="Status reference"
+    )
+    StatusReason: Optional[str] = Field(None, description="Status reason reference")
+    Type: Optional[ConnectContactReferenceType] = Field(
+        None, description="Type reference"
+    )
+    Value: Optional[str] = Field(None, description="Value reference")
+
+    @property
+    def arn(self) -> str | None:
+        """The ARN reference."""
+        return self.Arn
+
+    @property
+    def status(self) -> ConnectContactReferenceStatus | None:
+        """The status reference."""
+        return self.Status
+    
+    @property
+    def status_reason(self) -> str | None:
+        """The status reason reference."""
+        return self.StatusReason
+
+    @property
+    def type(self) -> ConnectContactReferenceType | None:
+        """The type reference."""
+        return self.Type
+
+    @property
+    def value(self) -> str | None:
+        """The value reference."""
+        return self.Value
+
+
+class ConnectContactSegmentAttributes(BaseModel):
+    """
+    Contact segment attributes
+    """
+
+    ValueArn: Optional[str] = Field(
+        None, description="Value ARN of the contact Attributes"
+    )
+    ValueInteger: Optional[float] = Field(
+        None, description="Value integer of the contact Attributes"
+    )
+    ValueList: Optional[list[str]] = Field(
+        None, description="Value list of the contact Attributes"
+    )
+    ValueMap: Optional[dict[str, str]] = Field(
+        None, description="Value map of the contact Attributes"
+    )
+    ValueString: Optional[str] = Field(
+        None, description="Value string of the contact Attributes"
+    )
+
+    @property
+    def value_arn(self) -> str | None:
+        """The value ARN of the contact Attributes."""
+        return self.ValueArn
+
+    @property
+    def value_integer(self) -> float | None:
+        """The value integer of the contact Attributes."""
+        return self.ValueInteger
+
+    @property
+    def value_list(self) -> list[str] | None:
+        """The value list of the contact Attributes."""
+        return self.ValueList
+
+    @property
+    def value_map(self) -> dict[str, str] | None:
+        """The value map of the contact Attributes."""
+        return self.ValueMap
+
+    @property
+    def value_string(self) -> str | None:
+        """The value string of the contact Attributes."""
+        return self.ValueString
+
+
+class ConnectContactFlowAdditionalEmailRecipients(BaseModel):
+    """
+    Additional email recipients information
+    """
+
+    CcList: list[str] = Field(
+        ..., description="The email address of the CC recipients", min_length=0
+    )
+    ToList: list[str] = Field(
+        ..., description="The email address of the to recipients", min_length=0
+    )
+
+    @property
+    def cc_list(self) -> list[str]:
+        """The email addresses of the CC recipients."""
+        return self.CcList
+
+    @property
+    def to_list(self) -> list[str]:
+        """The email addresses of the to recipients."""
+        return self.ToList
+
+
 class ConnectContactFlowData(BaseModel):
     """
     Contact flow data information
     """
 
     Attributes: dict[str, str] = Field(..., description="Contact attributes")
+    AwsRegion: str = Field(..., description="AWS region of the contact")
     Channel: ConnectContactFlowChannel = Field(
         ..., description="Contact channel method"
     )
@@ -168,27 +319,58 @@ class ConnectContactFlowData(BaseModel):
     CustomerEndpoint: Optional[ConnectContactFlowEndpoint] = Field(
         None, description="Customer endpoint information"
     )
+    CustomerId: Optional[str] = Field(None, description="Customer identifier")
+    Description: Optional[str] = Field(None, description="Contact description")
     InitialContactId: str = Field(..., description="Initial contact identifier")
     InitiationMethod: ConnectContactFlowInitiationMethod = Field(
         ..., description="Contact initiation method"
     )
     InstanceARN: str = Field(..., description="Amazon Connect instance ARN")
-    PreviousContactId: str = Field(..., description="Previous contact identifier")
-    Queue: Optional[ConnectContactFlowQueue] = Field(
-        None, description="Current queue information"
-    )
-    SystemEndpoint: Optional[ConnectContactFlowEndpoint] = Field(
-        None, description="System endpoint information"
+    LanguageCode: Optional[str] = Field(
+        None, description="Language code of the contact"
     )
     MediaStreams: ConnectContactFlowMediaStreams = Field(
         ..., description="Media streams information"
     )
+    Name: Optional[str] = Field(None, description="Contact name")
+    PreviousContactId: str = Field(..., description="Previous contact identifier")
+    Queue: Optional[ConnectContactFlowQueue] = Field(
+        None, description="Current queue information"
+    )
+    References: Optional[dict[str, ConnectContactReferenceFields]] = Field(
+        None, description="Contact references"
+    )
+    RelatedContactId: Optional[str] = Field(
+        None, description="Related contact identifier"
+    )
+    SegmentAttributes: Optional[ConnectContactSegmentAttributes] = Field(
+        None, description="Contact segment attributes"
+    )
+    SystemEndpoint: Optional[ConnectContactFlowEndpoint] = Field(
+        None, description="System endpoint information"
+    )
+    Tags: Optional[dict[str, str]] = Field(
+        None, description="Tags associated with the contact"
+    )
+
+    # Email Specific
+    AdditionalEmailRecipients: Optional[ConnectContactFlowAdditionalEmailRecipients] = (
+        Field(
+            None,
+            description="Additional email recipients information. Only relevant for EMAIL channel",
+        )
+    )
+
+    @property
+    def aws_region(self) -> str:
+        """The AWS region of the contact."""
+        return self.AwsRegion
 
     @property
     def attributes(self) -> dict[str, str]:
-        """These are attributes that have been previously associated with a contact,
-        such as when using a Set contact attributes block in a contact flow.
-        This map may be empty if there aren't any saved attributes.
+        """
+        These are attributes that have been previously associated with a contact.
+        This map may be empty if there aren't any attributes.
         """
         return self.Attributes
 
@@ -208,10 +390,20 @@ class ConnectContactFlowData(BaseModel):
         return self.CustomerEndpoint
 
     @property
+    def customer_id(self) -> str | None:
+        """The unique identifier of the customer."""
+        return self.CustomerId
+
+    @property
+    def description(self) -> str | None:
+        """The description of the contact."""
+        return self.Description
+
+    @property
     def initial_contact_id(self) -> str:
         """
-        The unique identifier for the contact associated with the first interaction between 
-        the customer and your contact center. Use the initial contact ID to track contacts 
+        The unique identifier for the contact associated with the first interaction between
+        the customer and your contact center. Use the initial contact ID to track contacts
         between contact flows.
         """
         return self.InitialContactId
@@ -227,6 +419,21 @@ class ConnectContactFlowData(BaseModel):
         return self.InstanceARN
 
     @property
+    def language_code(self) -> str | None:
+        """The language code of the contact."""
+        return self.LanguageCode
+
+    @property
+    def media_streams(self) -> ConnectContactFlowMediaStreams:
+        """The media streams for the contact."""
+        return self.MediaStreams
+
+    @property
+    def name(self) -> str | None:
+        """The name of the contact."""
+        return self.Name
+
+    @property
     def previous_contact_id(self) -> str:
         """The unique identifier for the contact before it was transferred.
         Use the previous contact ID to trace contacts between contact flows.
@@ -239,14 +446,41 @@ class ConnectContactFlowData(BaseModel):
         return self.Queue
 
     @property
+    def references(self) -> dict[str, ConnectContactReferenceFields] | None:
+        """The contact references."""
+        return self.References
+
+    @property
+    def related_contact_id(self) -> str | None:
+        """The unique identifier for a related contact. This can be either link
+        showing where this contact was created, or some other tie"""
+        return self.RelatedContactId
+
+    @property
+    def segment_attributes(self) -> ConnectContactSegmentAttributes | None:
+        """The contact segment attributes."""
+        return self.SegmentAttributes
+
+    @property
     def system_endpoint(self) -> ConnectContactFlowEndpoint | None:
-        """Contains the address (number) the customer dialed to call your contact center and type of address."""
+        """
+        Contains the details the customer contacted your contact
+        center and type of address.
+        """
         return self.SystemEndpoint
 
     @property
-    def media_streams(self) -> ConnectContactFlowMediaStreams:
-        """The media streams for the contact."""
-        return self.MediaStreams
+    def tags(self) -> dict[str, str] | None:
+        """The tags associated with the contact."""
+        return self.Tags
+
+    # Email specific
+    @property
+    def additional_email_recipients(
+        self,
+    ) -> ConnectContactFlowAdditionalEmailRecipients | None:
+        """Additional email recipients information"""
+        return self.AdditionalEmailRecipients
 
 
 class ConnectContactFlowEventDetails(BaseModel):

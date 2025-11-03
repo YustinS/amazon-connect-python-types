@@ -38,6 +38,7 @@ class TestSuccess:
             "Details": {
                 "ContactData": {
                     "Attributes": {},
+                    "AwsRegion": "us-east-1",
                     "Channel": "CHAT",
                     "ContactId": "minimal-contact-id",
                     "InitialContactId": "minimal-initial-contact-id",
@@ -65,6 +66,7 @@ class TestSuccess:
             "Details": {
                 "ContactData": {
                     "Attributes": {"test": "value"},
+                    "AwsRegion": "us-east-1",
                     "Channel": "VOICE",
                     "ContactId": "test-contact-id",
                     "InitialContactId": "test-initial-contact-id",
@@ -94,6 +96,7 @@ class TestSuccess:
             "Details": {
                 "ContactData": {
                     "Attributes": {},
+                    "AwsRegion": "us-east-1",
                     "Channel": "VOICE",
                     "ContactId": "original-contact-id",
                     "InitialContactId": "original-initial-contact-id",
@@ -134,6 +137,7 @@ class TestFailures:
             "Details": {
                 "ContactData": {
                     "Attributes": {},
+                    "AwsRegion": "us-east-1",
                     "Channel": "INVALID_CHANNEL",  # Invalid value
                     "ContactId": "test-contact-id",
                     "InitialContactId": "test-initial-contact-id",
@@ -158,6 +162,7 @@ class TestFailures:
             "Details": {
                 "ContactData": {
                     "Attributes": {},
+                    "AwsRegion": "us-east-1",
                     "Channel": "VOICE",
                     "ContactId": "test-contact-id",
                     "InitialContactId": "test-initial-contact-id",
@@ -179,6 +184,7 @@ class TestFailures:
             "Details": {
                 "ContactData": {
                     "Attributes": {},
+                    "AwsRegion": "us-east-1",
                     "Channel": "VOICE",
                     # Missing ContactId - required field
                     "InitiationMethod": "INBOUND",

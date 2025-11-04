@@ -1,6 +1,6 @@
 install:
 	$(info [*] Preparing development environment...)
-	@uv venv
+	@uv venv --allow-existing
 	@uv sync
 
 test:

@@ -2,12 +2,11 @@
 Schema definitions for proficiency routing expressions and steps.
 """
 
-from __future__ import annotations
 from typing import Any, List, Optional, Literal
 from pydantic import BaseModel, Field, field_validator, model_validator
 
 
-class RangeSpec(BaseModel):  # pylint:disable=too-few-public-methods
+class RangeSpec(BaseModel):
     """
     Range specification model.
     """
@@ -37,7 +36,7 @@ class RangeSpec(BaseModel):  # pylint:disable=too-few-public-methods
         return self
 
 
-class AttributeCondition(BaseModel):  # pylint:disable=too-few-public-methods
+class AttributeCondition(BaseModel):
     """
     Attribute condition model for proficiency routing.
     """
@@ -112,7 +111,7 @@ class AttributeCondition(BaseModel):  # pylint:disable=too-few-public-methods
         return self
 
 
-class AttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-methods
+class AttributeConditionExpr(BaseModel):
     """
     Attribute condition expression model.
     """
@@ -120,12 +119,12 @@ class AttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-method
     AttributeCondition: AttributeCondition
 
     @property
-    def attribute_condition(self) -> AttributeCondition:
+    def attribute_condition(self) -> "AttributeCondition":
         """Attribute condition to evaluate."""
         return self.AttributeCondition
 
 
-class NotAttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-methods
+class NotAttributeConditionExpr(BaseModel):
     """
     Not condition expression model.
     """
@@ -138,7 +137,7 @@ class NotAttributeConditionExpr(BaseModel):  # pylint:disable=too-few-public-met
         return self.NotAttributeCondition
 
 
-class CompoundExpr(BaseModel):  # pylint:disable=too-few-public-methods
+class CompoundExpr(BaseModel):
     """
     Model for compound expressions (And/Or).
     """
@@ -208,7 +207,7 @@ class CompoundExpr(BaseModel):  # pylint:disable=too-few-public-methods
         return [parse_expression_item(item) for item in v]
 
 
-class ExpiryRule(BaseModel):  # pylint:disable=too-few-public-methods
+class ExpiryRule(BaseModel):
     """
     Model for expiry rules.
     """
@@ -244,7 +243,7 @@ def parse_expression_item(item: Any):
     raise ValueError(f"Unknown expression type in item: {item}")
 
 
-class Step(BaseModel):  # pylint:disable=too-few-public-methods
+class Step(BaseModel):
     """
     Schema for a single proficiency routing step.
     """
@@ -282,7 +281,7 @@ class Step(BaseModel):  # pylint:disable=too-few-public-methods
         raise ValueError(f"Invalid Expression value: {v}")
 
 
-class ProficiencyRoutingPayload(BaseModel):  # pylint:disable=too-few-public-methods
+class ProficiencyRoutingPayload(BaseModel):
     """
     Schema for proficiency routing payload.
     """

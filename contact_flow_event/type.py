@@ -5,8 +5,6 @@ Based on the AWS Lambda Powertools structure
 https://github.com/aws-powertools/powertools-lambda-python/blob/develop/aws_lambda_powertools/utilities/data_classes/connect_contact_flow_event.py
 """
 
-from __future__ import annotations
-
 from enum import Enum
 from typing import Optional
 
@@ -218,7 +216,7 @@ class ConnectContactReferenceFields(BaseModel):
     def status(self) -> ConnectContactReferenceStatus | None:
         """The status reference."""
         return self.Status
-    
+
     @property
     def status_reason(self) -> str | None:
         """The status reason reference."""

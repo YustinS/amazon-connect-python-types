@@ -20,4 +20,4 @@ minversion = "6.0"
 testpaths = [
     "tests",
 ]
-addopts = "-vv"
+addopts = "--cov=contact_flow_event --cov=proficiency_routing --cov-report=term-missing -vv"

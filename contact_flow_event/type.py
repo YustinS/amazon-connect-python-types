@@ -34,6 +34,7 @@ class ConnectContactFlowEndpointType(Enum):
 class ConnectContactFlowInitiationMethod(Enum):
     """
     The initiation method of the contact
+    https://docs.aws.amazon.com/connect/latest/adminguide/contact-initiation-methods.html
     """
 
     INBOUND = "INBOUND"
@@ -41,7 +42,12 @@ class ConnectContactFlowInitiationMethod(Enum):
     TRANSFER = "TRANSFER"
     CALLBACK = "CALLBACK"
     API = "API"
+    QUEUE_TRANSFER = "QUEUE_TRANSFER"
     DISCONNECT = "DISCONNECT"
+    WEBRTC_API = "WEBRTC_API"
+    EXTERNAL_OUTBOUND = "EXTERNAL_OUTBOUND"
+    MONITOR = "MONITOR"
+    AGENT_REPLY ="AGENT_REPLY"
     FLOW = "FLOW"
 
 

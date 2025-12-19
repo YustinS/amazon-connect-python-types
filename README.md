@@ -31,7 +31,7 @@ Importantly, this may not include all `enum` values. Notably, this doesn't curre
 
 ## Development
 
-These repo uses [uv](https://uv.dev/) to manage the development environment and dependencies.
+These repo uses [uv](https://docs.astral.sh/uv/) to manage the development environment and dependencies.
 To set up the development environment, run:
 
 ```sh
